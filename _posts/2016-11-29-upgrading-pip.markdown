@@ -21,7 +21,7 @@ $ sudo pip install --upgrade pip
 $ pip --version
 pip 1.5.4 from /usr/lib/python2.7/dist-packages (python 2.7)
 
-# I double-checked which verison of pip was being used
+# I double-checked which version of pip was being used
 $ which pip
 /usr/local/bin/pip
 
