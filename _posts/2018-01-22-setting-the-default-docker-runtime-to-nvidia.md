@@ -3,11 +3,11 @@ layout: post
 title: Setting the default docker runtime to nvidia
 ---
 
-> [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) v2 depends on [libnvidia-container](https://github.com/NVIDIA/libnvidia-container) which is still just an alpha release.
-> So, use these instructions at your own risk, and think carefully about the security implications before using this in production.
-
 With nvidia-docker2, it is now possible to change your default docker runtime to nvidia, instead of runc.
 This means you can use any docker tool (e.g. docker-compose) and get GPUs visible inside your containers by default.
+
+> [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) v2 depends on [libnvidia-container](https://github.com/NVIDIA/libnvidia-container) which is still just an alpha release.
+> So, use these instructions at your own risk, and think carefully about the security implications before using this in production.
 
 ## Installation
 
