@@ -1,0 +1,202 @@
+<p>
+<ul>
+  <li><a id="advantage-example" href="#" onClick="return(show_example('ROLL(1,20)', 'MAX(ROLL(1,20),ROLL(1,20))'))">Advantage</a></li>
+  <li><a href="#" onClick="return(show_example('ROLL(1,12)', 'ROLL(2,6)'))">Greataxe vs Greatsword</a></li>
+  <li><a href="#" onClick="return(show_example('ROLL(1,20)', 'REPLACE(ROLL(1,20),[1],ROLL(1,20))'))">Halfling "Lucky" racial trait</a></li>
+  <li><a href="#" onClick="return(show_example('ADD(5,ROLL(2,10))', 'MAX(ADD(5,ROLL(2,10)),ADD(5,ROLL(2,10)))'))">Using the "Savage Attacker" feat to roll 2d10+5 twice</a></li>
+</ul>
+</p>
+
+<form>
+  <label for="dice-input-A">Input A</label>
+  <input id="dice-input-A" type="text" style="width:100%" />
+  <br />
+
+  <label for="dice-input-B">Input B</label>
+  <input id="dice-input-B" type="text" style="width:100%" />
+  <br />
+
+  <button id="submit-button" type="button" onclick="do_calculation()">Calculate</button>
+</form>
+
+<div id="bar-chart"></div>
+<div id="box-plot"></div>
+
+<script src="/assets/js/plotly-1.52.3.min.js"></script>
+
+<script>
+  function show_example(a, b) {
+    document.getElementById("dice-input-A").value = a;
+    document.getElementById("dice-input-B").value = b;
+    do_calculation();
+    return false;
+  }
+
+  function dice_reduce(x, y, reducer) {
+    if (typeof(x) == "number" && typeof(y) == "number") {
+      return reducer(x, y);
+    } else if (typeof(x) == "number" && Array.isArray(y)) {
+      return y.map(e => reducer(e, x));
+    } else if (Array.isArray(x) && typeof(y) == "number") {
+      return x.map(e => reducer(e, y));
+    } else if (Array.isArray(x) && Array.isArray(y)) {
+      var r = [];
+      for (var i = 0; i < x.length; ++i) {
+        for (var j = 0; j < y.length; ++j) {
+          r.push(reducer(x[i], y[j]));
+        }
+      }
+      return r;
+    } else {
+      throw("Unknown type[s] in dice_reduce()");
+    }
+  }
+
+  function ADD(x, y) {
+    return dice_reduce(x, y, (a, b) => (a + b));
+  }
+
+  function MAX(x, y) {
+    return dice_reduce(x, y, Math.max);
+  }
+
+  function MIN(x, y) {
+    return dice_reduce(x, y, Math.min);
+  }
+
+  function REPLACE(x, a, b) {
+    if (!Array.isArray(a)) {
+      throw("A must be an array in REPLACE())");
+      return;
+    }
+
+    if (typeof(b) == "number") {
+      return x.map(e => a.includes(e) ? b : e);
+    } else if (Array.isArray(b)) {
+      var r = [];
+      x.forEach(xe => {
+        if (a.includes(xe)) {
+          b.forEach(be => r.push(be));
+        } else {
+          b.forEach(be => r.push(xe)); // Make b.length copies of xe
+        }
+      });
+      return r;
+    } else {
+      throw("B must be either a number or an array in REPLACE()");
+      return;
+    }
+  }
+
+  function ROLL(x, y) {
+    var a = 0;
+    for (var i = 0; i < x; ++i) {
+      var b = [];
+      for (var j = 1; j <= y; ++j) {
+        b.push(j);
+      }
+      a = ADD(a, b);
+    }
+    return a;
+  }
+
+  function get_stats(a) {
+    var count = a.length;
+
+    // Pass 1
+    var sum = 0, min = a[0], max = a[0];
+    a.forEach(e => {
+      sum += e;
+      min = Math.min(min, e);
+      max = Math.max(max, e);
+    });
+    var mean = sum / count;
+
+    // Pass 2
+    var buckets = Array(max).fill(0);
+    var variance = 0;
+    a.forEach(e => {
+      buckets[e] += 1;
+      variance += Math.pow(e - mean, 2);
+    });
+    buckets = buckets.map(e => e / count);
+    variance /= count;
+
+    console.log({count, a});
+
+    return {data: a, min, max, mean, variance, buckets};
+  }
+
+  function do_calculation() {
+    document.getElementById("submit-button").disabled = true;
+
+    var inputA = document.getElementById("dice-input-A").value;
+    var inputB = document.getElementById("dice-input-B").value;
+
+    var statsA, statsB;
+    if (inputA) {
+      var dataA = eval(inputA);
+      if (!Array.isArray(dataA)) {
+        console.log("Input A invalid");
+      } else {
+        statsA = get_stats(dataA);
+      }
+    }
+    if (inputB) {
+      var dataB = eval(inputB);
+      if (!Array.isArray(dataB)) {
+        console.log("Input B invalid");
+      } else {
+        statsB = get_stats(dataB);
+      }
+    }
+
+    if (! statsA && ! statsB) {
+      return;
+    }
+
+    var layout = {height: 250, margin: {t: 20, b: 20}};
+
+    Plotly.newPlot(
+      "bar-chart",
+      [
+        {
+          x: statsA.buckets.forEach((e, i) => i),
+          y: statsA.buckets,
+          type: "bar",
+          name: "A",
+        },
+        {
+          x: statsB.buckets.forEach((e, i) => i),
+          y: statsB.buckets,
+          type: "bar",
+          name: "B",
+        },
+      ],
+      layout,
+    );
+    Plotly.newPlot(
+      "box-plot",
+      [
+        {
+          y: statsA.data,
+          type: "box",
+          name: "A",
+          boxmean: "sd",
+        },
+        {
+          y: statsB.data,
+          type: "box",
+          name: "B",
+          boxmean: "sd",
+        },
+      ],
+      layout,
+    );
+    document.getElementById("submit-button").disabled = false;
+  }
+
+  window.addEventListener("load", function() {
+    document.getElementById("advantage-example").click();
+  });
+</script>
