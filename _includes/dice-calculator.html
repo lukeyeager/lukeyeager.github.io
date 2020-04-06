@@ -161,13 +161,13 @@
       "bar-chart",
       [
         {
-          x: statsA.buckets.forEach((e, i) => i),
+          x: statsA.buckets.forEach((e, i) => i+1),
           y: statsA.buckets,
           type: "bar",
           name: "A",
         },
         {
-          x: statsB.buckets.forEach((e, i) => i),
+          x: statsB.buckets.forEach((e, i) => i+1),
           y: statsB.buckets,
           type: "bar",
           name: "B",
