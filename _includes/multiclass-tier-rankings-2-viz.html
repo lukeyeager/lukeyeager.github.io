@@ -1,0 +1,172 @@
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+<div id="container"></div>
+<script type="module">
+
+const data = {
+    nodes: [
+        {id: "Artificer", group: 4},
+        {id: "Barbarian", group: 1},
+        {id: "Bard", group: 6},
+        {id: "Cleric", group: 5},
+        {id: "Druid", group: 5},
+        {id: "Fighter", group: 1},
+        {id: "Monk", group: 2},
+        {id: "Paladin", group: 1},
+        {id: "Ranger", group: 2},
+        {id: "Rogue", group: 2},
+        {id: "Sorcerer", group: 6},
+        {id: "Warlock", group: 6},
+        {id: "Wizard", group: 4},
+    ],
+    links: [
+        {source: "Artificer", target: "Barbarian", value: 0.0},
+        {source: "Artificer", target: "Bard", value: 0.75},
+        {source: "Artificer", target: "Cleric", value: 1.5},
+        {source: "Artificer", target: "Druid", value: 0.0},
+        {source: "Artificer", target: "Fighter", value: 2.25},
+        {source: "Artificer", target: "Monk", value: 0.0},
+        {source: "Artificer", target: "Paladin", value: 1.25},
+        {source: "Artificer", target: "Ranger", value: 1.0},
+        {source: "Artificer", target: "Rogue", value: 2.75},
+        {source: "Artificer", target: "Sorcerer", value: 0.75},
+        {source: "Artificer", target: "Warlock", value: 0.5},
+        {source: "Artificer", target: "Wizard", value: 3.0},
+        {source: "Barbarian", target: "Bard", value: 0.5},
+        {source: "Barbarian", target: "Cleric", value: 1.0},
+        {source: "Barbarian", target: "Druid", value: 2.5},
+        {source: "Barbarian", target: "Fighter", value: 4.0},
+        {source: "Barbarian", target: "Monk", value: 2.0},
+        {source: "Barbarian", target: "Paladin", value: 3.0},
+        {source: "Barbarian", target: "Ranger", value: 2.0},
+        {source: "Barbarian", target: "Rogue", value: 2.5},
+        {source: "Barbarian", target: "Sorcerer", value: 0.0},
+        {source: "Barbarian", target: "Warlock", value: 1.0},
+        {source: "Barbarian", target: "Wizard", value: 0.0},
+        {source: "Bard", target: "Cleric", value: 1.25},
+        {source: "Bard", target: "Druid", value: 0.0},
+        {source: "Bard", target: "Fighter", value: 2.0},
+        {source: "Bard", target: "Monk", value: 0.0},
+        {source: "Bard", target: "Paladin", value: 3.5},
+        {source: "Bard", target: "Ranger", value: 0.25},
+        {source: "Bard", target: "Rogue", value: 2.25},
+        {source: "Bard", target: "Sorcerer", value: 2.25},
+        {source: "Bard", target: "Warlock", value: 3.0},
+        {source: "Bard", target: "Wizard", value: 0.25},
+        {source: "Cleric", target: "Druid", value: 2.0},
+        {source: "Cleric", target: "Fighter", value: 3.25},
+        {source: "Cleric", target: "Monk", value: 3.0},
+        {source: "Cleric", target: "Paladin", value: 1.5},
+        {source: "Cleric", target: "Ranger", value: 1.5},
+        {source: "Cleric", target: "Rogue", value: 2.5},
+        {source: "Cleric", target: "Sorcerer", value: 1.0},
+        {source: "Cleric", target: "Warlock", value: 1.0},
+        {source: "Cleric", target: "Wizard", value: 1.75},
+        {source: "Druid", target: "Fighter", value: 1.5},
+        {source: "Druid", target: "Monk", value: 2.5},
+        {source: "Druid", target: "Paladin", value: 1.5},
+        {source: "Druid", target: "Ranger", value: 2.25},
+        {source: "Druid", target: "Rogue", value: 2.5},
+        {source: "Druid", target: "Sorcerer", value: 0.5},
+        {source: "Druid", target: "Warlock", value: 0.0},
+        {source: "Druid", target: "Wizard", value: 0.0},
+        {source: "Fighter", target: "Monk", value: 2.0},
+        {source: "Fighter", target: "Paladin", value: 3.0},
+        {source: "Fighter", target: "Ranger", value: 3.5},
+        {source: "Fighter", target: "Rogue", value: 3.5},
+        {source: "Fighter", target: "Sorcerer", value: 1.25},
+        {source: "Fighter", target: "Warlock", value: 1.5},
+        {source: "Fighter", target: "Wizard", value: 2.75},
+        {source: "Monk", target: "Paladin", value: 0.0},
+        {source: "Monk", target: "Ranger", value: 3.25},
+        {source: "Monk", target: "Rogue", value: 3.5},
+        {source: "Monk", target: "Sorcerer", value: 0.5},
+        {source: "Monk", target: "Warlock", value: 1.5},
+        {source: "Monk", target: "Wizard", value: 0.5},
+        {source: "Paladin", target: "Ranger", value: 0.0},
+        {source: "Paladin", target: "Rogue", value: 2.0},
+        {source: "Paladin", target: "Sorcerer", value: 4.0},
+        {source: "Paladin", target: "Warlock", value: 3.5},
+        {source: "Paladin", target: "Wizard", value: 0.5},
+        {source: "Ranger", target: "Rogue", value: 4.0},
+        {source: "Ranger", target: "Sorcerer", value: 0.25},
+        {source: "Ranger", target: "Warlock", value: 1.0},
+        {source: "Ranger", target: "Wizard", value: 0.0},
+        {source: "Rogue", target: "Sorcerer", value: 1.5},
+        {source: "Rogue", target: "Warlock", value: 1.75},
+        {source: "Rogue", target: "Wizard", value: 1.75},
+        {source: "Sorcerer", target: "Warlock", value: 4.0},
+        {source: "Sorcerer", target: "Wizard", value: 0.75},
+        {source: "Warlock", target: "Wizard", value: 0.5},
+    ],
+}
+
+const width = 740;
+const height = 300;
+const color = d3.scaleOrdinal(d3.schemeCategory10);
+const links = data.links.map(d => ({...d}));
+const nodes = data.nodes.map(d => ({...d}));
+
+// NOTE: this is the only thing I really needed to modify besides the data
+const simulation = d3.forceSimulation(nodes)
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("radius", d3.forceCollide(5))
+    .force("link", d3.forceLink(links)
+        .id(d => d.id)
+        .strength(d => (1 + Math.abs(d.value - 2)))
+        .distance(d => (200 * (1 - d.value/4) )))
+    .on("tick", ticked);
+
+const svg = d3.create("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("viewBox", [0, 0, width, height])
+    .attr("style", "max-width: 100%; height: auto;");
+const link = svg.append("g")
+    .attr("stroke", "#999")
+    .attr("stroke-opacity", 0.6)
+    .selectAll()
+    .data(links)
+    .join("line")
+    .attr("stroke-width", d => Math.sqrt(d.value));
+const node = svg.append("g")
+    .attr("stroke", "#fff")
+    .attr("stroke-width", 1.5)
+    .selectAll()
+    .data(nodes)
+    .join("circle")
+    .attr("r", 5)
+    .attr("fill", d => color(d.group));
+node.append("title")
+    .text(d => d.id);
+node.call(d3.drag()
+      .on("start", dragstarted)
+      .on("drag", dragged)
+      .on("end", dragended));
+function ticked() {
+  link
+      .attr("x1", d => d.source.x)
+      .attr("y1", d => d.source.y)
+      .attr("x2", d => d.target.x)
+      .attr("y2", d => d.target.y);
+  node
+      .attr("cx", d => d.x)
+      .attr("cy", d => d.y);
+}
+function dragstarted(event) {
+  if (!event.active) simulation.alphaTarget(0.3).restart();
+  event.subject.fx = event.subject.x;
+  event.subject.fy = event.subject.y;
+}
+function dragged(event) {
+  event.subject.fx = event.x;
+  event.subject.fy = event.y;
+}
+function dragended(event) {
+  if (!event.active) simulation.alphaTarget(0);
+  event.subject.fx = null;
+  event.subject.fy = null;
+}
+
+container.append(svg.node());
+</script>
