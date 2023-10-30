@@ -63,6 +63,8 @@ rtt min/avg/max/mdev = 1921680980071019.925/1921680980071020.032/192168098007101
 ```
 If you squint a bit, you'll see that the source IP (192.168.98.7) is embedded into the RTT.
 
+Full source code: [https://github.com/lukeyeager/whatsmyip-icmp/tree/main/ping-ttl](https://github.com/lukeyeager/whatsmyip-icmp/tree/main/ping-ttl)
+
 Pros:
 * It works using a standard client tool, entirely over ICMP - yay!
 
@@ -107,6 +109,8 @@ HOST: 45e5a1953131   Loss%   Snt   Last   Avg  Best  Wrst StDev
 ```
 See the source address embedded in the last byte of hops 2, 3, 4, and 5?
 You could also use `traceroute -In` for the client command and get a similar output.
+
+Full source code: [https://github.com/lukeyeager/whatsmyip-icmp/tree/main/mtr-hops](https://github.com/lukeyeager/whatsmyip-icmp/tree/main/mtr-hops)
 
 Pros:
 * It works using either `mtr` or `traceroute`, entirely over ICMP
