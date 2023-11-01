@@ -17,11 +17,11 @@ You can get your **local** IP address easily (via `ip address` for Linux, or `ip
 But if the result is in [one of the private blocks](https://datatracker.ietf.org/doc/html/rfc1918#section-3) (e.g. 192.168.1.2), then you're probably behind a NAT (possibly provided by your home's router) and you need an external service to tell you your public IP.
 
 Implementing the service over HTTP (like the services listed above) as easy as deploying the following nginx configuration:
-```
+```nginx
 http {
-    // ...
+    # ...
     server {
-        // ...
+        # ...
         location /getmyip {
             echo "Your IP address is $remote_addr";
         }
@@ -129,4 +129,4 @@ I had a lot of fun with this project!
 I reminded myself of many things I had forgotten about IP, ICMP, and C programming.
 And I learned a lot about about eBPF, which was new to me.
 
-I'm sure there are many other ways to accomplish this goal (such as [https://github.com/blechschmidt/fakeroute](https://github.com/blechschmidt/fakeroute)) - let me know what I missed!
+I'm sure there are many other ways to accomplish this goal (such as [github.com/blechschmidt/fakeroute](https://github.com/blechschmidt/fakeroute) and [github.com/jordiprats/netfilter-icmp2ip](https://github.com/jordiprats/netfilter-icmp2ip)) - let me know what I missed!
