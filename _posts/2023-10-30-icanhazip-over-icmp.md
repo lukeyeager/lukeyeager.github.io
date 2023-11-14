@@ -116,7 +116,7 @@ Pros:
 * It works using either `mtr` or `traceroute`, entirely over ICMP
 
 Cons:
-* It only compiles on a recent Archlinux kernel (even Fedora 38) isn't new enough
+* It only compiles on a recent Archlinux kernel (even Fedora 38 isn't new enough)
 * Address spoofing across the internet doesn't work in many cases (e.g. AWS) because the datacenter provider usually filters out packets sent by unexpected IPs
     * I had hoped that sending packets from the same /24 subnet would address the issue, but it doesn't, at least not on AWS
 
@@ -126,7 +126,7 @@ Future work:
 
 # Conclusion
 I had a lot of fun with this project!
-I reminded myself of many things I had forgotten about IP, ICMP, and C programming.
+I reminded myself of many things I had forgotten regarding IP, ICMP, and C programming.
 And I learned a lot about about eBPF, which was new to me.
 
 I'm sure there are many other ways to accomplish this goal (such as [github.com/blechschmidt/fakeroute](https://github.com/blechschmidt/fakeroute) and [github.com/jordiprats/netfilter-icmp2ip](https://github.com/jordiprats/netfilter-icmp2ip)) - let me know what I missed!
